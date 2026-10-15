@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { HealthCheck, HealthCheckService, PrismaHealthIndicator } from '@nestjs/terminus';
+import { Throttle } from '@nestjs/throttler';
 import { Public } from '../common/decorators/public.decorator';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -13,6 +14,7 @@ export class HealthController {
 
   @Public()
   @Get()
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @HealthCheck()
   check() {
     return this.health.check([() => this.prismaHealth.pingCheck('database', this.prisma)]);
