@@ -311,3 +311,30 @@ ping real no banco via Prisma (`PrismaHealthIndicator`):
 
 Quando o banco está indisponível a rota responde **`503 Service Unavailable`**
 com `status: "error"` e `database.status: "down"`.
+
+### 🔒 Em produção (hardening)
+
+Aqui o `/health` é público de propósito, para facilitar o setup local e permitir
+que o **load balancer**, o orquestrador ou o monitoramento o consultem. Em
+produção, o ideal é **não expor essa rota para a internet** e restringir o
+acesso por origem de rede — defesa em profundidade:
+
+- **Load balancer:** é o principal consumidor do `/health`. Ele sonda cada
+  instância e, ao receber `503`, **remove a instância do pool** (para de rotear
+  tráfego até ela voltar a responder `200`) — é isso que transforma o health
+  check em alta disponibilidade. Por isso a rota deve ser liberada **só** para os
+  IPs do balanceador (e do orquestrador), nunca para a internet: aberta, ela vira
+  superfície para reconhecimento e abuso (cada hit custa uma query no banco).
+- **Na borda (preferível):** liberar `/health` apenas para CIDRs internas no
+  ingress/reverse proxy, `NetworkPolicy` (Kubernetes), security group/ALB ou
+  firewall. Assim a requisição de fora do range nem chega à aplicação.
+- **Na aplicação:** um guard que compara `req.ip` com uma allowlist (ex.:
+  `10.0.0.0/8`, IPs do load balancer) e responde `403` fora dela. Atrás de proxy
+  é preciso configurar `app.set('trust proxy', <n>)` para obter o IP real; e o
+  header `X-Forwarded-For` só deve ser confiado quando vem do proxy imediato —
+  ele é falsificável pelo cliente, então nunca use o valor cru para autorizar.
+- Separe **liveness** (processo vivo) de **readiness** (pronto para receber
+  tráfego) e restrinja ambos da mesma forma.
+
+Isso não está no escopo do desafio (a rota é aberta de propósito), mas é o que
+eu aplicaria em um ambiente real.
