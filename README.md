@@ -95,6 +95,7 @@ Todos com a senha **`Senha@123`**. Faça `POST /auth/login` e use o
 - **Prisma 6** + **PostgreSQL 17** (via Docker)
 - **Zod** com `nestjs-zod` (validação de DTOs)
 - **JWT** (`@nestjs/jwt`) e **CASL** (permissões por perfil)
+- **Health check** com `@nestjs/terminus` (`GET /health`)
 - **Jest** (testes), **ESLint** + **Prettier**
 
 ---
@@ -104,7 +105,7 @@ Todos com a senha **`Senha@123`**. Faça `POST /auth/login` e use o
 ```
 code/src/
 ├── main.ts / app.module.ts   # Bootstrap e registro dos módulos
-├── health.controller.ts      # GET /health
+├── health/                   # GET /health (health check com @nestjs/terminus)
 ├── prisma/                   # schema.prisma, migrations, seed e PrismaService
 │
 ├── common/                   # Infra transversal
@@ -202,7 +203,7 @@ seguido de dois pontos e uma descrição curta em inglês.
 
 Boa sorte! 🚀
 
-
+---
 
 ## ✅ Implementações realizadas
 
@@ -266,6 +267,7 @@ preenchidos (ex.: `LoginDto`, `CreateVehicleDto`, `CreateRefuelingDto`).
 cd code
 
 npm test                 # testes unitários
+npm run test:cov         # unitários + coverage (relatório em ../coverage)
 npm run test:integration # integração com Testcontainers (requer Docker rodando)
 ```
 
@@ -279,3 +281,22 @@ Com a API rodando (`npm run start:dev`):
 
 - **Swagger UI:** http://localhost:3000/api
 - **OpenAPI JSON:** http://localhost:3000/api-json
+
+## ❤️ Health check
+
+Rota pública (`@Public`, sem token) baseada no `@nestjs/terminus`, que faz um
+ping real no banco via Prisma (`PrismaHealthIndicator`):
+
+- **Health check:** http://localhost:3000/health
+
+```json
+{
+  "status": "ok",
+  "info": { "database": { "status": "up" } },
+  "error": {},
+  "details": { "database": { "status": "up" } }
+}
+```
+
+Quando o banco está indisponível a rota responde **`503 Service Unavailable`**
+com `status: "error"` e `database.status: "down"`.

@@ -15,14 +15,21 @@ export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
 
   catch(exception: unknown, host: ArgumentsHost): void {
+    const response = host.switchToHttp().getResponse<Response>();
     const status =
       exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    host
-      .switchToHttp()
-      .getResponse<Response>()
-      .status(status)
-      .json({ statusCode: status, message: this.extractMessage(exception) });
+    const body = exception instanceof HttpException ? exception.getResponse() : undefined;
+    if (this.isHealthCheckResult(body)) {
+      response.status(status).json(body);
+      return;
+    }
+
+    response.status(status).json({ statusCode: status, message: this.extractMessage(exception) });
+  }
+
+  private isHealthCheckResult(body: unknown): body is Record<string, unknown> {
+    return typeof body === 'object' && body !== null && 'status' in body && 'details' in body;
   }
 
   private extractMessage(exception: unknown): string | string[] {
