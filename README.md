@@ -201,3 +201,81 @@ seguido de dois pontos e uma descrição curta em inglês.
 ---
 
 Boa sorte! 🚀
+
+
+
+## ✅ Implementações realizadas
+
+### Módulo de Veículos (desafio obrigatório)
+
+CRUD completo em `code/src/modules/vehicles` seguindo o padrão de `companies`/`users`:
+
+| Método | Rota | Descrição |
+| --- | --- | --- |
+| `POST` | `/vehicles` | Cria um veículo (`201` `{ id, message }`) |
+| `GET` | `/vehicles` | Lista paginada com filtros (`search`, `vehicleType`, `isActive`, `companyId`, `page`, `limit`, `orderBy`, `order`) |
+| `GET` | `/vehicles/:id` | Detalhe de um veículo |
+| `PATCH` | `/vehicles/:id` | Atualização parcial |
+| `DELETE` | `/vehicles/:id` | Soft delete (`204`) |
+
+Regras implementadas: placa única por empresa entre veículos não excluídos (`409`),
+normalização da placa (`abc-1d23` → `ABC1D23`), escopo por empresa (`404` para
+veículo de outra empresa), bloqueio do perfil `Visualização` (`403`) e soft delete
+(veículos excluídos não aparecem em nenhum endpoint).
+
+### Abastecimentos + relatório de consumo (bônus)
+
+- `POST /vehicles/:id/refuelings` — registra abastecimento (`201`).
+- `GET /vehicles/:id/refuelings` — lista paginada e ordenada por data.
+- `GET /vehicles/:id/consumption?startDate=AAAA-MM-DD&endDate=AAAA-MM-DD` — relatório de consumo.
+
+Regras: apenas veículos **ativos** recebem abastecimento; o hodômetro deve ser maior
+que o do abastecimento anterior e menor que o do posterior (tratando lançamentos "no
+meio" do histórico); o escopo por empresa vem do veículo. No relatório de consumo,
+com menos de 2 abastecimentos no período a API responde `200` com uma `message` de
+insuficiência de dados e totais zerados.
+
+### Documentação Swagger
+
+Documentação habilitada em `code/src/main.ts` com os DTOs Zod expostos via
+`nestjs-zod` (`cleanupOpenApiDoc`). Todos os schemas de request/response aparecem
+preenchidos (ex.: `LoginDto`, `CreateVehicleDto`, `CreateRefuelingDto`).
+
+### Testes
+
+- **Unitários** (`*.spec.ts` ao lado de cada service): `companies`, `vehicles` e
+  `refuelings`.
+- **Integração** com **Testcontainers** (PostgreSQL 17 efêmero, migrations + seed
+  aplicados automaticamente), em `src/modules/vehicles/integration-test` e
+  `src/modules/refuelings/integration-test`. O banco de desenvolvimento **não** é
+  afetado — cada execução sobe um container descartável.
+
+### Ajustes técnicos
+
+- `@nestjs/swagger` fixado em `^11.x` (compatível com NestJS 11) e `nestjs-zod`
+  atualizado para `^5`.
+- Correção da validação de `companyId` no DTO de veículo (`.cuid2()`, pois o Prisma
+  gera ids `cuid2`).
+- Configuração do ESLint corrigida para Windows (`tsconfigRootDir`).
+
+---
+
+## 🧪 Como rodar os testes
+
+```bash
+cd code
+
+npm test                 # testes unitários
+npm run test:integration # integração com Testcontainers (requer Docker rodando)
+```
+
+> ℹ️ Os testes de integração precisam do **Docker** ativo. Eles usam um banco
+> PostgreSQL isolado em container e aplicam `prisma migrate deploy` + `prisma db seed`
+> automaticamente.
+
+## 📚 Swagger
+
+Com a API rodando (`npm run start:dev`):
+
+- **Swagger UI:** http://localhost:3000/api
+- **OpenAPI JSON:** http://localhost:3000/api-json
