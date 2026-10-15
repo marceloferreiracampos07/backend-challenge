@@ -11,7 +11,7 @@ import { ConsumptionQueryDto } from '../Dto/query-refueling.dto';
 export class RefuelingsController {
   constructor(private readonly refuelingsService: RefuelingsService) {}
 
-  @Can('create', 'Vehicle')
+  @Can('create', 'Refueling')
   @Post(':id/refuelings')
   @HttpCode(HttpStatus.CREATED)
   async create(
@@ -22,7 +22,7 @@ export class RefuelingsController {
     return this.refuelingsService.create(id, dto, user);
   }
 
-  @Can('read', 'Vehicle')
+  @Can('read', 'Refueling')
   @Get(':id/refuelings')
   async findAll(
     @Param('id') id: string,
@@ -32,7 +32,7 @@ export class RefuelingsController {
     return this.refuelingsService.findAll(id, query, user);
   }
 
-  @Can('read', 'Vehicle')
+  @Can('read', 'Refueling')
   @Get(':id/consumption')
   async getConsumption(
     @Param('id') id: string,

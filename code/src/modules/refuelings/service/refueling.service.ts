@@ -4,8 +4,7 @@ import { AuthUser } from 'src/common/interfaces/auth-user.interface';
 import { AbilityFactory } from 'src/modules/ability/ability.factory';
 import { accessibleBy } from '@casl/prisma';
 import { CreateRefuelingDto } from '../Dto/create-refueling.dto';
-import { QueryRefuelingDto } from '../Dto/query-refueling.dto';
-import { ConsumptionQueryDto } from '../Dto/query-refueling.dto';
+import { ConsumptionQueryDto, QueryRefuelingDto } from '../Dto/query-refueling.dto';
 
 @Injectable()
 export class RefuelingsService {

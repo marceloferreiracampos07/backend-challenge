@@ -14,13 +14,17 @@ export class AbilityFactory {
       can('manage', 'all');
     } else if (user.companyId) {
       const companyId = user.companyId;
+      const companyScope = { companyId };
+      const refuelingScope = { vehicle: { companyId } };
 
       can('read', 'Company', { id: companyId });
 
       if (user.role === Role.MANAGER) {
-        can('manage', ['User', 'Vehicle'], { companyId });
+        can('manage', ['User', 'Vehicle'], companyScope);
+        can('manage', 'Refueling', refuelingScope);
       } else {
-        can('read', ['User', 'Vehicle'], { companyId });
+        can('read', ['User', 'Vehicle'], companyScope);
+        can('read', 'Refueling', refuelingScope);
       }
     }
 
