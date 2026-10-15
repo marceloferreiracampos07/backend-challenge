@@ -1,0 +1,48 @@
+### Variáveis de ambiente (ajuste os IDs e tokens conforme o seu banco/login)
+@baseUrl = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ3Mjk3YW5zN2p0cm9obGJwN3FzbDU2NnIiLCJyb2xlIjoiR2VzdG9yIiwiY29tcGFueUlkIjoiZnQ4cmduY2h1eHMzMG1sejFidDd3MjZpIiwiaWF0IjoxNzkyMDQzOTEyLCJleHAiOjE3OTIwNzI3MTJ9.CfHMIyHHNEnik5lPi3m_I4BhrBxhKLGUbSbqcoZq2X8
+
+@vehicleId = rencb7aox0q7wh4q4yopv54n
+
+### ==========================================
+### 1. REGISTRAR ABASTECIMENTO (POST /vehicles/:id/refuelings)
+### ==========================================
+POST {{baseUrl}}/vehicles/{{vehicleId}}/refuelings
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "date": "2026-06-01T10:00:00.000Z",
+  "liters": 50.5,
+  "totalValue": 315.00,
+  "odometer": 15000
+}
+
+
+### ==========================================
+### 2. REGISTRAR SEGUNDO ABASTECIMENTO (Para gerar histórico e cálculo)
+### ==========================================
+POST {{baseUrl}}/vehicles/{{vehicleId}}/refuelings
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "date": "2026-06-10T14:30:00.000Z",
+  "liters": 40.0,
+  "totalValue": 250.00,
+  "odometer": 15500
+}
+
+
+### ==========================================
+### 3. LISTAR ABASTECIMENTOS DO VEÍCULO (GET /vehicles/:id/refuelings)
+### ==========================================
+GET {{baseUrl}}/vehicles/{{vehicleId}}/refuelings?page=1&limit=10&order=desc
+Authorization: Bearer {{token}}
+
+
+### ==========================================
+### 4. OBTER RELATÓRIO DE CONSUMO (GET /vehicles/:id/consumption)
+### ==========================================
+GET {{baseUrl}}/vehicles/{{vehicleId}}/consumption?startDate=2026-06-01&endDate=2026-06-30
+Authorization: Bearer {{token}}

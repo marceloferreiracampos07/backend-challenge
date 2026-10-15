@@ -11,6 +11,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CompaniesModule } from './modules/companies/companies.module';
 import { UsersModule } from './modules/users/users.module';
 import { VehiclesModule } from './modules/vehicles/vehicles.module';
+import { RefuelingsModule } from './modules/refuelings/refuelings.module'; 
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { VehiclesModule } from './modules/vehicles/vehicles.module';
     CompaniesModule,
     UsersModule,
     VehiclesModule,
+    RefuelingsModule, 
   ],
   controllers: [HealthController],
   providers: [
