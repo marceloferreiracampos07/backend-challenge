@@ -58,9 +58,26 @@ model Vehicle {
   updatedAt   DateTime  @updatedAt @map("updated_at")
   deletedAt   DateTime? @map("deleted_at")
 
-  company Company @relation(name: "CompanyToVehicle", fields: [companyId], references: [id])
+  company   Company     @relation(name: "CompanyToVehicle", fields: [companyId], references: [id])
+  refuelings Refueling[] @relation(name: "VehicleToRefueling") // <--- Adicionado o campo inverso aqui!
 
   @@index([companyId])
   @@index([companyId, plate])
   @@map("vehicle")
+}
+
+model Refueling {
+  id         String   @id @default(cuid(2))
+  vehicleId  String   @map("vehicle_id")
+  date       DateTime
+  liters     Decimal  @db.Decimal(10, 2)
+  totalValue Decimal  @map("total_value") @db.Decimal(10, 2)
+  odometer   Int
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  vehicle Vehicle @relation(name: "VehicleToRefueling", fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([vehicleId, date])
+  @@map("refueling")
 }
