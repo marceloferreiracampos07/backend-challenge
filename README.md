@@ -267,7 +267,6 @@ preenchidos (ex.: `LoginDto`, `CreateVehicleDto`, `CreateRefuelingDto`).
 cd code
 
 npm test                 # testes unitários
-npm run test:cov         # unitários + coverage (relatório em ../coverage)
 npm run test:integration # integração com Testcontainers (requer Docker rodando)
 ```
 
