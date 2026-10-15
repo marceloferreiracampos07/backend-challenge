@@ -1,16 +1,12 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { VehicleType } from '../enums/vehicle-type.enum';
+import { plateSchema } from './plate.schema';
+
+const maxAllowedYear = new Date().getFullYear() + 1;
 
 export const updateVehicleSchema = z.object({
-  plate: z
-    .string()
-    .trim()
-    .refine(val => /^[a-zA-Z0-9-]+$/.test(val), {
-      message: 'Placa deve conter apenas letras, números e hífen',
-    })
-    .transform(val => val.toUpperCase())
-    .optional(),
+  plate: plateSchema.optional(),
   brand: z
     .string()
     .trim()
@@ -27,9 +23,7 @@ export const updateVehicleSchema = z.object({
     .number()
     .int({ message: 'Ano deve ser um número inteiro' })
     .min(1950, { message: 'Ano deve ser no mínimo 1950' })
-    .max(new Date().getFullYear() + 1, {
-      message: `Ano deve ser no máximo ${new Date().getFullYear() + 1}`,
-    })
+    .max(maxAllowedYear, { message: `Ano deve ser no máximo ${maxAllowedYear}` })
     .optional(),
   vehicleType: z
     .nativeEnum(VehicleType, {

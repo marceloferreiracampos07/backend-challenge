@@ -1,26 +1,12 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { VehicleType } from '../enums/vehicle-type.enum';
+import { plateSchema } from './plate.schema';
 
-const platePattern = /^[A-Za-z0-9-]+$/;
 const maxAllowedYear = new Date().getFullYear() + 1;
 
 export const createVehicleSchema = z.object({
-  plate: z
-    .string({ required_error: 'Placa é obrigatória' })
-    .trim()
-    .refine(val => platePattern.test(val), {
-      message: 'Placa deve conter apenas letras, números e hífen',
-    })
-    // Remove o hífen e converte para maiúsculo para caber no limite da coluna do banco
-    .transform(val => val.replace(/-/g, '').toUpperCase())
-    .refine(
-      val => {
-        const clean = val.toUpperCase();
-        return clean.length >= 3 && clean.length <= 7;
-      },
-      { message: 'Placa deve ter entre 3 e 7 caracteres (sem contar hífen)' },
-    ),
+  plate: plateSchema,
   brand: z
     .string({ required_error: 'Marca é obrigatória' })
     .trim()

@@ -58,8 +58,8 @@ model Vehicle {
   updatedAt   DateTime  @updatedAt @map("updated_at")
   deletedAt   DateTime? @map("deleted_at")
 
-  company   Company     @relation(name: "CompanyToVehicle", fields: [companyId], references: [id])
-  refuelings Refueling[] @relation(name: "VehicleToRefueling") // <--- Adicionado o campo inverso aqui!
+  company    Company     @relation(name: "CompanyToVehicle", fields: [companyId], references: [id])
+  refuelings Refueling[] @relation(name: "VehicleToRefueling")
 
   @@index([companyId])
   @@index([companyId, plate])

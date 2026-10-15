@@ -1,4 +1,3 @@
-import 'tsconfig-paths/register';
 import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
