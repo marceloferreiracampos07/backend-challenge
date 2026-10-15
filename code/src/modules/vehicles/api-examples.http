@@ -30,11 +30,11 @@ GET {{baseUrl}}/vehicles?page=1&limit=10&search=fiat&vehicleType=Carro&vehicleTy
 Authorization: Bearer {{token}}
 
 ### Detalhar veículo
-GET {{baseUrl}}/vehicles/ID_DO_VEICULO
+GET {{baseUrl}}/vehicles/b14l86ce2h1ej1vqxjge0rlp
 Authorization: Bearer {{token}}
 
 ### Atualizar veículo
-PATCH {{baseUrl}}/vehicles/ID_DO_VEICULO
+PATCH {{baseUrl}}/vehicles/b14l86ce2h1ej1vqxjge0rlp
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -44,5 +44,5 @@ Content-Type: application/json
 }
 
 ### Excluir veículo
-DELETE {{baseUrl}}/vehicles/ID_DO_VEICULO
+DELETE {{baseUrl}}/vehicles/b14l86ce2h1ej1vqxjge0rlp
 Authorization: Bearer {{token}}
