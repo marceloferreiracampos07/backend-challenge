@@ -10,6 +10,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { Can } from 'src/common/decorators/can.decorator';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { AuthUser } from 'src/common/interfaces/auth-user.interface';
@@ -18,6 +19,7 @@ import { QueryVehicleDto } from '../dtos/query-vehicle.dto';
 import { UpdateVehicleDto } from '../dtos/update-vehicle.dto';
 import { VehiclesService } from '../service/vehicles.service';
 
+@ApiBearerAuth()
 @Controller('vehicles')
 export class VehiclesController {
   constructor(private readonly vehiclesService: VehiclesService) {}

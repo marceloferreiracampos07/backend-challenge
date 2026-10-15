@@ -10,6 +10,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { Can } from 'src/common/decorators/can.decorator';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { AuthUser } from 'src/common/interfaces/auth-user.interface';
@@ -18,6 +19,7 @@ import { QueryCompanyDto } from '../dtos/query-company.dto';
 import { UpdateCompanyDto } from '../dtos/update-company.dto';
 import { CompaniesService } from '../services/companies.service';
 
+@ApiBearerAuth()
 @Controller('companies')
 export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}

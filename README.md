@@ -282,6 +282,18 @@ Com a API rodando (`npm run start:dev`):
 - **Swagger UI:** http://localhost:3000/api
 - **OpenAPI JSON:** http://localhost:3000/api-json
 
+As rotas protegidas usam **Bearer/JWT**, então o Swagger já expõe o botão
+**Authorize**. Para testar pela própria UI:
+
+1. Abra o `POST /auth/login` → **Try it out** e envie um usuário do seed
+   (ex.: `admin@motiron.com` / `Senha@123`).
+2. Copie o `accessToken` da resposta.
+3. Clique em **Authorize** (topo da página), cole **apenas o token** e confirme.
+4. Os endpoints com cadeado agora podem ser executados direto.
+
+> ℹ️ O resultado respeita o perfil do token: um usuário `Visualização` recebe
+> `403` nas operações de escrita. `/health` e `/auth/login` continuam públicos.
+
 ## ❤️ Health check
 
 Rota pública (`@Public`, sem token) baseada no `@nestjs/terminus`, que faz um

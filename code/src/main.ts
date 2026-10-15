@@ -38,6 +38,7 @@ async function bootstrap() {
     .setTitle('Motiron API')
     .setDescription('API de gestão de frota Motiron')
     .setVersion('1.0')
+    .addBearerAuth()
     .addTag('Motiron')
     .build();
   const document = cleanupOpenApiDoc(SwaggerModule.createDocument(app, config));

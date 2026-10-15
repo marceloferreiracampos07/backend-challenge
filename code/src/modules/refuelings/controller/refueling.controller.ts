@@ -1,12 +1,13 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { Can } from 'src/common/decorators/can.decorator';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { AuthUser } from 'src/common/interfaces/auth-user.interface';
 import { RefuelingsService } from '../service/refueling.service';
 import { CreateRefuelingDto } from '../Dto/create-refueling.dto';
-import { QueryRefuelingDto } from '../Dto/query-refueling.dto';
-import { ConsumptionQueryDto } from '../Dto/query-refueling.dto';
+import { ConsumptionQueryDto, QueryRefuelingDto } from '../Dto/query-refueling.dto';
 
+@ApiBearerAuth()
 @Controller('vehicles')
 export class RefuelingsController {
   constructor(private readonly refuelingsService: RefuelingsService) {}
