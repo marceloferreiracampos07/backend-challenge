@@ -4,6 +4,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import { AuthGuard } from './common/guards/auth.guard';
 import { PoliciesGuard } from './common/guards/policies.guard';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { HealthController } from './health.controller';
 import { PrismaModule } from './prisma/prisma.module';
 import { AbilityModule } from './modules/ability/ability.module';
@@ -11,18 +12,27 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CompaniesModule } from './modules/companies/companies.module';
 import { UsersModule } from './modules/users/users.module';
 import { VehiclesModule } from './modules/vehicles/vehicles.module';
-import { RefuelingsModule } from './modules/refuelings/refuelings.module'; 
+import { RefuelingsModule } from './modules/refuelings/refuelings.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          limit: 10,
+          ttl: 60,
+        },
+      ],
+      setHeaders: true,
+    }),
     AbilityModule,
     AuthModule,
     CompaniesModule,
     UsersModule,
     VehiclesModule,
-    RefuelingsModule, 
+    RefuelingsModule,
   ],
   controllers: [HealthController],
   providers: [

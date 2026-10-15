@@ -35,10 +35,7 @@ export class VehiclesService {
   ) {}
 
   async create(data: CreateVehicleDto, user: AuthUser): Promise<{ id: string; message: string }> {
-    const companyId = await this.companyScopeResolver.resolveCompanyId(
-      data as { companyId?: string },
-      user,
-    );
+    const companyId = await this.companyScopeResolver.resolveCompanyId(data, user);
 
     await this.ensurePlateIsAvailableInCompany(data.plate, companyId);
 
@@ -116,12 +113,9 @@ export class VehiclesService {
       await this.ensurePlateIsAvailableInCompany(data.plate, vehicle.companyId, id);
     }
 
-  
-    const { companyId, ...updateData } = data as any;
-
     await this.prisma.vehicle.update({
       where: { id },
-      data: updateData,
+      data,
     });
 
     return { id, message: 'Veículo atualizado com sucesso' };

@@ -6,10 +6,9 @@ export const updateVehicleSchema = z.object({
   plate: z
     .string()
     .trim()
-    .refine(
-      val => /^[a-zA-Z0-9-]+$/.test(val),
-      { message: 'Placa deve conter apenas letras, números e hífen' },
-    )
+    .refine(val => /^[a-zA-Z0-9-]+$/.test(val), {
+      message: 'Placa deve conter apenas letras, números e hífen',
+    })
     .transform(val => val.toUpperCase())
     .optional(),
   brand: z
@@ -34,7 +33,9 @@ export const updateVehicleSchema = z.object({
     .optional(),
   vehicleType: z
     .nativeEnum(VehicleType, {
-      errorMap: () => ({ message: `Tipo de veículo deve ser um de: ${Object.values(VehicleType).join(', ')}` }),
+      errorMap: () => ({
+        message: `Tipo de veículo deve ser um de: ${Object.values(VehicleType).join(', ')}`,
+      }),
     })
     .optional(),
   isActive: z.boolean({ invalid_type_error: 'isActive deve ser booleano' }).optional(),

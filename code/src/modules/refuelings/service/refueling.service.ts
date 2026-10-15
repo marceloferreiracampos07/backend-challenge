@@ -19,10 +19,7 @@ export class RefuelingsService {
 
     const vehicle = await this.prisma.vehicle.findFirst({
       where: {
-        AND: [
-          { id: vehicleId, deletedAt: null },
-          accessibleBy(ability, 'read').Vehicle,
-        ],
+        AND: [{ id: vehicleId, deletedAt: null }, accessibleBy(ability, 'read').Vehicle],
       },
       select: { id: true, plate: true, isActive: true, companyId: true },
     });
@@ -53,13 +50,13 @@ export class RefuelingsService {
 
     if (previousRefueling && data.odometer <= previousRefueling.odometer) {
       throw new BadRequestException(
-        `O hodômetro não pode ser menor ou igual ao do abastecimento anterior (${previousRefueling.odometer} km).`
+        `O hodômetro não pode ser menor ou igual ao do abastecimento anterior (${previousRefueling.odometer} km).`,
       );
     }
 
     if (nextRefueling && data.odometer >= nextRefueling.odometer) {
       throw new BadRequestException(
-        `O hodômetro não pode ser maior ou igual ao do abastecimento posterior (${nextRefueling.odometer} km).`
+        `O hodômetro não pode ser maior ou igual ao do abastecimento posterior (${nextRefueling.odometer} km).`,
       );
     }
 
@@ -90,7 +87,7 @@ export class RefuelingsService {
         where: { vehicleId },
         skip,
         take: limit,
-        orderBy: { date: order }, 
+        orderBy: { date: order },
       }),
       this.prisma.refueling.count({ where: { vehicleId } }),
     ]);
@@ -125,7 +122,8 @@ export class RefuelingsService {
         vehicleId: vehicle.id,
         plate: vehicle.plate,
         period: { startDate: query.startDate, endDate: query.endDate },
-        message: 'Insuficiência de dados: são necessários pelo menos 2 abastecimentos no período para calcular o consumo.',
+        message:
+          'Insuficiência de dados: são necessários pelo menos 2 abastecimentos no período para calcular o consumo.',
         totalKm: 0,
         totalLiters: 0,
         totalSpent: 0,

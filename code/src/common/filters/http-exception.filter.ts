@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ZodValidationException } from 'nestjs-zod';
+import { ZodError } from 'zod';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -26,11 +27,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   private extractMessage(exception: unknown): string | string[] {
     if (exception instanceof ZodValidationException) {
-      return exception
-        .getZodError()
-        .issues.map(issue =>
+      const error = exception.getZodError();
+      if (error instanceof ZodError) {
+        return error.issues.map(issue =>
           issue.path.length ? `${issue.path.join('.')}: ${issue.message}` : issue.message,
         );
+      }
     }
 
     if (!(exception instanceof HttpException)) {

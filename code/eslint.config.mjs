@@ -1,4 +1,5 @@
 // @ts-check
+import { fileURLToPath } from 'node:url';
 import eslint from '@eslint/js';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
@@ -20,7 +21,7 @@ export default tseslint.config(
       sourceType: 'module',
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: new URL('.', import.meta.url).pathname,
+        tsconfigRootDir: fileURLToPath(new URL('.', import.meta.url)),
       },
     },
   },

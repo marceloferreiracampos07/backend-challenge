@@ -1,0 +1,21 @@
+{
+  "rootDir": "src",
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "moduleNameMapper": {
+    "^src/(.*)$": "<rootDir>/$1"
+  },
+  "testRegex": ".*\\.integration-spec\\.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": [
+      "ts-jest",
+      {
+        "diagnostics": {
+          "ignoreCodes": [151002]
+        }
+      }
+    ]
+  },
+  "testEnvironment": "node",
+  "testTimeout": 180000,
+  "maxWorkers": 1
+}

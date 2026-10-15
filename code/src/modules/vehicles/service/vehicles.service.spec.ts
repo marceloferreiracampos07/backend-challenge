@@ -47,7 +47,7 @@ describe('VehiclesService', () => {
     abilityFactory = { createForUser: jest.fn().mockReturnValue({ can: () => true }) };
     companyScopeResolver = { resolveCompanyId: jest.fn().mockResolvedValue('company-1') };
 
-    service = new VehiclesService(prisma as any, abilityFactory as any, companyScopeResolver as any);
+    service = new VehiclesService(prisma as any, abilityFactory, companyScopeResolver as any);
   });
 
   describe('create', () => {
@@ -56,7 +56,7 @@ describe('VehiclesService', () => {
       prisma.vehicle.findFirst.mockResolvedValue(null);
       prisma.vehicle.create.mockResolvedValue({ id: 'vehicle-1' });
 
-      const result = await service.create(createDto as any, admin);
+      const result = await service.create(createDto, admin);
 
       expect(result).toEqual({ id: 'vehicle-1', message: 'Veículo criado com sucesso' });
       expect(prisma.vehicle.create).toHaveBeenCalledWith({
@@ -72,10 +72,16 @@ describe('VehiclesService', () => {
       companyScopeResolver.resolveCompanyId.mockResolvedValue('company-1');
       prisma.vehicle.findFirst.mockResolvedValue({ id: 'vehicle-existing' });
 
-      await expect(service.create(createDto as any, admin)).rejects.toBeInstanceOf(ConflictException);
+      await expect(service.create(createDto as any, admin)).rejects.toBeInstanceOf(
+        ConflictException,
+      );
       expect(prisma.vehicle.findFirst).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: expect.objectContaining({ plate: createDto.plate, companyId: 'company-1', deletedAt: null }),
+          where: expect.objectContaining({
+            plate: createDto.plate,
+            companyId: 'company-1',
+            deletedAt: null,
+          }),
         }),
       );
       expect(prisma.vehicle.create).not.toHaveBeenCalled();
@@ -113,7 +119,11 @@ describe('VehiclesService', () => {
 
   describe('remove', () => {
     it('faz soft delete preenchendo deletedAt em vez de apagar o registro', async () => {
-      prisma.vehicle.findFirst.mockResolvedValue({ id: 'vehicle-1', companyId: 'company-1', plate: 'ABC1234' });
+      prisma.vehicle.findFirst.mockResolvedValue({
+        id: 'vehicle-1',
+        companyId: 'company-1',
+        plate: 'ABC1234',
+      });
 
       await service.remove('vehicle-1', admin);
 
