@@ -10,12 +10,19 @@ import {
 export const queryVehicleSchema = paginationQuerySchema.extend({
   search: z.string().trim().optional(),
   vehicleType: z
-    .nativeEnum(VehicleType, {
-      errorMap: () => ({
-        message: `Tipo de veículo deve ser um de: ${Object.values(VehicleType).join(', ')}`,
-      }),
-    })
-    .array()
+    .preprocess(
+      val => {
+        if (val === undefined || val === '') return undefined;
+        return Array.isArray(val) ? val : [val];
+      },
+      z
+        .nativeEnum(VehicleType, {
+          errorMap: () => ({
+            message: `Tipo de veículo deve ser um de: ${Object.values(VehicleType).join(', ')}`,
+          }),
+        })
+        .array(),
+    )
     .optional(),
   isActive: booleanQueryParam('isActive'),
   companyId: z.string().optional(),

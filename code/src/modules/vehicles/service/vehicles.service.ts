@@ -40,10 +40,7 @@ export class VehiclesService {
     await this.ensurePlateIsAvailableInCompany(data.plate, companyId);
 
     const created = await this.prisma.vehicle.create({
-      data: {
-        ...data,
-        companyId,
-      },
+      data: { ...data, companyId },
       select: { id: true },
     });
 
@@ -58,11 +55,7 @@ export class VehiclesService {
 
     const ability = this.abilityFactory.createForUser(user);
     const where: Prisma.VehicleWhereInput = {
-      AND: [
-        accessibleBy(ability, 'read').Vehicle,
-        { deletedAt: null },
-        ...this.buildFilters(filters),
-      ],
+      AND: [accessibleBy(ability, 'read').Vehicle, this.buildFilters(filters), { deletedAt: null }],
     };
 
     const [vehicles, total] = await Promise.all([
@@ -152,35 +145,31 @@ export class VehiclesService {
 
   private buildFilters(
     filters: Omit<QueryVehicleDto, 'page' | 'limit' | 'orderBy' | 'order'>,
-  ): Prisma.VehicleWhereInput[] {
-    const conditions: Prisma.VehicleWhereInput[] = [];
+  ): Prisma.VehicleWhereInput {
+    const where: Prisma.VehicleWhereInput = {};
 
     if (filters.search) {
-      conditions.push({
-        OR: [
-          { plate: { contains: filters.search, mode: 'insensitive' } },
-          { brand: { contains: filters.search, mode: 'insensitive' } },
-          { model: { contains: filters.search, mode: 'insensitive' } },
-        ],
-      });
+      where.OR = [
+        { plate: { contains: filters.search, mode: 'insensitive' } },
+        { brand: { contains: filters.search, mode: 'insensitive' } },
+        { model: { contains: filters.search, mode: 'insensitive' } },
+      ];
     }
 
     if (filters.vehicleType) {
-      conditions.push({
-        vehicleType: Array.isArray(filters.vehicleType)
-          ? { in: filters.vehicleType }
-          : filters.vehicleType,
-      });
+      where.vehicleType = Array.isArray(filters.vehicleType)
+        ? { in: filters.vehicleType }
+        : filters.vehicleType;
     }
 
     if (filters.isActive !== undefined) {
-      conditions.push({ isActive: filters.isActive });
+      where.isActive = filters.isActive;
     }
 
     if (filters.companyId) {
-      conditions.push({ companyId: filters.companyId });
+      where.companyId = filters.companyId;
     }
 
-    return conditions;
+    return where;
   }
 }
